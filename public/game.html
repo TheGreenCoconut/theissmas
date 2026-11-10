@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canvas Game</title>
+    <style>
+        body { background-color: #dbeafe; }
+        canvas { background-color: #dbeafe; }
+    </style>
 </head>
 <body>
+    <p>Score: <span id="gameScore">0</span></p>
+    <p id="saveStatus" role="status"></p>
+    <button id="retrySave" hidden>Retry saving score</button>
     <canvas id="gameCanvas" width="600" height="800"></canvas>
-    <script src="scripts/game.js"></script>
+    <script type="module" src="scripts/game.js"></script>
 </body>
 </html>

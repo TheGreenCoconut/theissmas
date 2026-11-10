@@ -1,14 +1,23 @@
+import { saveGame } from './game-database.js';
+
 class Game {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         this.score = 0;
+        this.runId = crypto.randomUUID();
+        this.completed = false;
+        document.getElementById('retrySave').addEventListener('click', () => this.saveScore());
 
         // Define the shapes (example rectangles here)
         this.shapes = [
             { x: 50, y: 50, width: 50, height: 50, name: 'Main' },
             { x: 150, y: 150, width: 50, height: 50, name: 'collectable' },
-            { x: 250, y: 250, width: 50, height: 50, name: 'collectable' }
+            { x: 250, y: 250, width: 50, height: 50, name: 'collectable' },
+            { x: 400, y: 100, width: 50, height: 50, name: 'collectable' },
+            { x: 100, y: 400, width: 50, height: 50, name: 'collectable' },
+            { x: 350, y: 500, width: 50, height: 50, name: 'collectable' },
+            { x: 500, y: 700, width: 50, height: 50, name: 'collectable' }
         ];
 
         // Start game loop
@@ -29,13 +38,33 @@ class Game {
     }
 
     handleInput(e) {
-        // Example: Move the first shape to the right when the right arrow key is pressed
-        if (e.key === 'ArrowRight') {
-            this.shapes[0].x += 10;
-        } else if (e.key === 'ArrowDown') {
-            this.shapes[0].y += 10;
+        const directions = {
+            ArrowRight: [10, 0],
+            ArrowLeft: [-10, 0],
+            ArrowDown: [0, 10],
+            ArrowUp: [0, -10]
+        };
+        const direction = directions[e.key];
+        if (!direction) return;
+        e.preventDefault();
+        const player = this.shapes[0];
+        player.x = Math.max(0, Math.min(this.canvas.width - player.width, player.x + direction[0]));
+        player.y = Math.max(0, Math.min(this.canvas.height - player.height, player.y + direction[1]));
+    }
+
+    async saveScore() {
+        const status = document.getElementById('saveStatus');
+        const retry = document.getElementById('retrySave');
+        retry.hidden = true;
+        status.textContent = 'Game complete! Saving score…';
+        try {
+            await saveGame(this.runId, this.score);
+            status.textContent = 'Game complete! Score saved.';
+        } catch (error) {
+            console.error('Could not save score:', error);
+            status.textContent = `Could not save your score: ${error.code || error.message}. Please try again.`;
+            retry.hidden = false;
         }
-        // ... You can add more controls here.
     }
 
     checkCollision(obj1, obj2) {
@@ -49,15 +78,18 @@ class Game {
     update() {
         this.redraw();
 
-        // Example collision check between the first and second shapes
-        if (this.checkCollision(this.shapes[0], this.shapes[1])) {
-            console.log('Collision detected between shape 1 and 2!');
+        // Check every remaining block, including when several overlap the player.
+        for (let i = this.shapes.length - 1; i > 0; i--) {
+            if (this.checkCollision(this.shapes[0], this.shapes[i])) {
+                this.score++;
+                this.shapes.splice(i, 1);
+            }
+        }
 
-            // Increase the score
-            this.incorrectScoreVariableNameChangeThisTo_score++;
-
-            // Remove the second shape from the array
-            this.shapes.splice(1, 1);
+        document.getElementById('gameScore').textContent = this.score;
+        if (this.shapes.length === 1 && !this.completed) {
+            this.completed = true;
+            this.saveScore();
         }
 
         // Use requestAnimationFrame for smooth animations

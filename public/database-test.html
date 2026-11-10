@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game database test</title>
+  <style>body {font-family:system-ui;max-width:700px;margin:40px auto;padding:20px;background:#dbeafe}button,input {font:inherit;padding:10px}pre {white-space:pre-wrap;overflow-wrap:anywhere}</style>
+</head>
+<body>
+  <h1>Game database test</h1>
+  <p>Write a test score of 6, then read it back from Firestore. This uses your anonymous player account and creates a test run.</p>
+  <label>Run ID <input id="runId" maxlength="100"></label>
+  <p><button id="write">Write test score</button> <button id="read">Read score</button></p>
+  <pre id="result" role="status">Ready.</pre>
+  <a href="game.html">Back to game</a>
+  <script type="module" src="scripts/database-test.js"></script>
+</body>
+</html>

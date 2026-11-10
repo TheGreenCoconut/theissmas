@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /gamePlayers/{playerId}/runs/{runId} {
+      allow read: if request.auth != null && request.auth.uid == playerId;
+      allow create, update: if request.auth != null
+        && request.auth.uid == playerId
+        && request.resource.data.keys().hasAll(['score', 'completedAt'])
+        && request.resource.data.keys().hasOnly(['score', 'completedAt'])
+        && request.resource.data.score is int
+        && request.resource.data.score == 6
+        && request.resource.data.completedAt == request.time;
+    }
+  }
+}
