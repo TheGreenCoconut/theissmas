@@ -36,5 +36,10 @@ document.getElementById("thisisauniqueid").addEventListener('click', (event) => 
     alert("STOP STOP STOP STOP");
 });
 
+document.getElementById('gameButton').addEventListener('click', (event) => {
+    event.stopPropagation();
+    window.location.href = 'game.html';
+});
+
 // Note that we construct the class here, but we don't need to assign it to a variable.
 document.mainClass = new Main();
