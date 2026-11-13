@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="scripts/analytics-config.js"></script>
-    <script src="scripts/analytics.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Game</title>
-    <style>
-        body { background-color: #dbeafe; }
-        canvas { background-color: #dbeafe; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moonbound</title>
+  <link rel="stylesheet" href="game.css">
+  <script src="scripts/analytics-config.js"></script>
+  <script src="scripts/analytics.js"></script>
 </head>
 <body>
-    <p>Score: <span id="gameScore">0</span></p>
-    <p id="saveStatus" role="status"></p>
-    <button id="retrySave" hidden>Retry saving score</button>
-    <canvas id="gameCanvas" width="600" height="800"></canvas>
-    <script type="module" src="scripts/game.js"></script>
+  <main class="shell">
+    <header class="topbar"><div><span class="eyebrow">A low-gravity platformer</span><h1>MOONBOUND</h1></div><button id="pauseButton" class="icon-button" type="button" aria-label="Pause game" hidden>Ⅱ</button></header>
+    <div class="game-frame">
+      <canvas id="game" width="960" height="540" aria-label="Moonbound platformer. Keyboard controls are shown below."></canvas>
+      <section id="startScreen" class="overlay start-screen" aria-label="Start game"><div class="panel start-panel"><span class="eyebrow">A journey across the quiet side</span><h2>Find your footing.<br>Find what is hidden.</h2><p>Fifteen rooms. Six secrets. One small leap at a time.</p><label for="playerName">What should we call you?</label><input id="playerName" maxlength="24" autocomplete="nickname" placeholder="Your name"><button id="startButton" class="primary pulse" type="button">Start exploring →</button><p id="startHint" class="hint" role="status"></p></div></section>
+      <section id="pauseScreen" class="overlay" aria-label="Pause menu" hidden><div class="panel menu-panel"><span class="eyebrow">Taking a breath</span><h2>Paused</h2><button id="resumeButton" type="button">Resume</button><button id="mapButton" type="button">Map · Quick travel</button><button id="inventoryButton" type="button"><svg class="hanger" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 7a3 3 0 1 1 4 2.8L12 12 2 20h20L12 12"/></svg> Inventory</button><button id="settingsButton" type="button" disabled title="Settings are coming later">Settings · Coming later</button></div></section>
+      <section id="mapScreen" class="overlay" aria-label="Main room map" hidden><div class="panel wide-panel"><span class="eyebrow">Where you've been</span><h2>Moon map</h2><p>Travel to any main room you've reached.</p><div id="roomMap" class="room-map"></div><button id="mapBack" type="button">Back</button></div></section>
+      <section id="inventoryScreen" class="overlay" aria-label="Inventory" hidden><div class="panel menu-panel"><span class="eyebrow">Make it yours</span><h2>Inventory</h2><div class="inventory-row"><span>Outfit</span><div><button id="outfitPrev" aria-label="Previous outfit" type="button">◀</button><strong id="outfitValue"></strong><button id="outfitNext" aria-label="Next outfit" type="button">▶</button></div></div><div class="inventory-row"><span>Dash trail</span><div><button id="trailPrev" aria-label="Previous dash trail" type="button">◀</button><strong id="trailValue"></strong><button id="trailNext" aria-label="Next dash trail" type="button">▶</button></div></div><button id="inventoryBack" type="button">Back</button></div></section>
+      <section id="endScreen" class="overlay" aria-label="Game complete" hidden><div class="panel start-panel"><span class="eyebrow">Journey complete</span><h2>You reached the far side.</h2><p>You made it through all fifteen rooms.</p><p id="secretsLeft" class="end-count"></p><button id="keepPlaying" class="primary" type="button">Keep playing · Open map</button></div></section>
+      <div id="saveIndicator" class="save-indicator" aria-hidden="true">✦ Saved</div>
+    </div>
+    <div class="hud"><p id="status" role="status">Reach the beacon to continue.</p><p id="abilities">Dash ready · Grip full</p></div>
+    <div class="footer"><p id="roomLabel">Room 01 / 15</p><p id="saveStatus" role="status"></p><button id="retrySave" type="button" hidden>Retry save</button></div>
+    <section id="controls" class="controls" aria-label="Controls"><p><kbd>A</kbd><kbd>D</kbd> or <kbd>←</kbd><kbd>→</kbd> Move</p><p><kbd>Space</kbd> / <kbd>Z</kbd> Jump</p><p><kbd>Shift</kbd> / <kbd>X</kbd> Dash</p><p><kbd>C</kbd> Grip · <kbd>W</kbd>/<kbd>S</kbd> Climb</p><p><kbd>E</kbd> Open chest</p><p><kbd>R</kbd> Restart</p><p><kbd>Esc</kbd> Pause</p></section>
+  </main>
+  <script type="module" src="scripts/moonbound.js?v=rooms-2"></script>
 </body>
 </html>

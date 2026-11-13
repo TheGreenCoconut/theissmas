@@ -11,5 +11,31 @@ service cloud.firestore {
         && request.resource.data.score == 6
         && request.resource.data.completedAt == request.time;
     }
+    match /gamePlayers/{playerId}/progress/moonbound {
+      allow read: if request.auth != null && request.auth.uid == playerId;
+      allow create, update: if request.auth != null
+        && request.auth.uid == playerId
+        && request.resource.data.keys().hasAll(['name', 'currentRoom', 'highest', 'found', 'outfit', 'trail', 'completed', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['name', 'currentRoom', 'highest', 'found', 'outfit', 'trail', 'completed', 'updatedAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 24
+        && request.resource.data.currentRoom is int
+        && request.resource.data.highest is int
+        && request.resource.data.highest >= 1
+        && request.resource.data.highest <= 15
+        && request.resource.data.currentRoom >= 1
+        && request.resource.data.currentRoom <= request.resource.data.highest
+        && request.resource.data.found is list
+        && request.resource.data.found.size() <= 6
+        && request.resource.data.outfit is int
+        && request.resource.data.outfit >= 0
+        && request.resource.data.outfit <= 3
+        && request.resource.data.trail is int
+        && request.resource.data.trail >= 0
+        && request.resource.data.trail <= 3
+        && request.resource.data.completed is bool
+        && request.resource.data.updatedAt == request.time;
+    }
   }
 }

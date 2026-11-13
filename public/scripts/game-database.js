@@ -9,7 +9,9 @@ function connect() {
             const response = await fetch('/__/firebase/init.json');
             if (!response.ok) throw new Error('Open the game through Firebase Hosting.');
             const app = initializeApp(await response.json());
-            const { user } = await signInAnonymously(getAuth(app));
+            const auth = getAuth(app);
+            await auth.authStateReady();
+            const user = auth.currentUser || (await signInAnonymously(auth)).user;
             return { db: getFirestore(app), uid: user.uid };
         })().catch(error => { connection = undefined; throw error; });
     }
@@ -28,4 +30,17 @@ export async function readGame(runId) {
     const { db, uid } = await connect();
     const snapshot = await getDocFromServer(doc(db, 'gamePlayers', uid, 'runs', runId));
     return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null;
+}
+
+export async function saveProgress(progress) {
+    const { db, uid } = await connect();
+    await setDoc(doc(db, 'gamePlayers', uid, 'progress', 'moonbound'), {
+        ...progress, updatedAt: serverTimestamp()
+    });
+}
+
+export async function readProgress() {
+    const { db, uid } = await connect();
+    const snapshot = await getDocFromServer(doc(db, 'gamePlayers', uid, 'progress', 'moonbound'));
+    return snapshot.exists() ? snapshot.data() : null;
 }
